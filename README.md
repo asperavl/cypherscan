@@ -34,52 +34,27 @@ OmenScan doesn't rely on simple K/D ratios. It weighs four key behavioral indica
 
 ---
 
-## 🏗️ Enterprise System Architecture
+## 🏗️ System Architecture
 
-OmenScan utilizes a highly-optimized **Backend-For-Frontend (BFF)** architecture. The client is completely isolated from the business logic, external APIs, and secret keys.
+OmenScan uses a clean **Backend-For-Frontend (BFF)** architecture to keep API keys hidden and ensure lightning-fast responses.
 
 ```mermaid
 sequenceDiagram
     participant Client as Frontend (UI)
     participant API as Next.js Backend
     participant Redis as Upstash Redis
-    participant Engine as Heuristic Engine
     participant Henrik as HenrikDev API
 
-    Client->>API: 1. POST { name, tag, region }
-    
-    rect rgb(20, 34, 46)
-        note right of API: Security & Caching Layer
-        API->>Redis: 2. Check Rate Limit (IP)
-        
-        alt Rate Limit Exceeded
-            Redis-->>API: Reject (HTTP 429)
-            API-->>Client: Error: Too Many Requests
-        else Rate Limit OK
-            API->>Redis: 3. Check Cache for Player ID
-            
-            alt Cache Hit
-                Redis-->>API: Return Cached Result
-                note right of API: ⚡ Instant Response (~50ms)
-            else Cache Miss
-                API->>Henrik: 4. Fetch Account & Matches
-                Henrik-->>API: Raw JSON Data
-                
-                API->>Engine: 5. Execute Analysis Logic
-                Engine-->>API: Smurf Probability & Flags
-                
-                API->>Redis: 6. Save Result (Expires in 10 mins)
-            end
-        end
-    end
-    
-    API-->>Client: 7. Return Aggregated Response
+    Client->>API: 1. Request Analysis
+    API->>Redis: 2. Check Rate Limits & Cache
+    API->>Henrik: 3. Fetch Match Data (if not cached)
+    API-->>Client: 4. Return Smurf Probability
 ```
 
-### 🔒 Security Highlights:
-- **Rate Limiting:** Protects the external API quota by strictly limiting users to 5 requests per minute per IP using `Upstash Redis`.
-- **Response Caching:** Analyzed profiles are cached in Redis for 10 minutes. Subsequent requests for the same player skip the API completely, dropping latency to ~50ms.
-- **Strict Validation:** Uses `Zod` to enforce strict payload shaping and automatically reject malformed or malicious data.
+### 🔒 Security & Performance
+- **Rate Limiting:** Protects the external API quota by strictly limiting users to 5 requests per minute using Upstash Redis.
+- **Response Caching:** Analyzed profiles are cached in Redis for 10 minutes, dropping repeat-search latency to ~50ms.
+- **Strict Validation:** Uses Zod to enforce strict payload shaping and reject malformed requests.
 
 ---
 
