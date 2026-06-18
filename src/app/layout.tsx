@@ -19,8 +19,8 @@ const oswald = Oswald({
 });
 
 export const metadata: Metadata = {
-  title: "OmenScan | Valorant Smurf Detector",
-  description: "Analyze competitive Valorant matches and expose smurfs with OmenScan.",
+  title: "CypherScan | Valorant Smurf Detector",
+  description: "Analyze competitive Valorant matches and expose smurfs with CypherScan.",
 };
 
 export default function RootLayout({

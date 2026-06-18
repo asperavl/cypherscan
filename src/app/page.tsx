@@ -63,7 +63,7 @@ export default function Home() {
         {/* Hero Header */}
         <div className="text-center space-y-6">
           <h1 className="text-6xl md:text-8xl font-[family-name:var(--font-oswald)] font-bold tracking-tight uppercase">
-            Omen<span className="text-primary">Scan</span>
+            Cypher<span className="text-primary">Scan</span>
           </h1>
           <p className="text-muted-foreground text-lg md:text-xl max-w-2xl mx-auto font-light">
             Enter a Valorant Riot ID to analyze recent competitive match data and expose lobby anomalies.

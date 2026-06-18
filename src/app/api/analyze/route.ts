@@ -59,7 +59,7 @@ export async function POST(request: Request) {
     }
 
     // 4. Cache Check (Graceful Degradation: If Redis fails, just fetch fresh data)
-    const cacheKey = `omenscan:${region}:${name.toLowerCase()}:${tag.toLowerCase()}`;
+    const cacheKey = `cypherscan:${region}:${name.toLowerCase()}:${tag.toLowerCase()}`;
     if (redis) {
       try {
         const cachedData = await redis.get(cacheKey);

@@ -1,5 +1,5 @@
 <div align="center">
-  <h1 align="center">OmenScan</h1>
+  <h1 align="center">CypherScan</h1>
   <p align="center"><strong>Advanced Heuristic Anomaly Detection for Valorant</strong></p>
   <p align="center">
     <img src="https://img.shields.io/badge/Next.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white" alt="Next.js" />
@@ -15,16 +15,16 @@
 
 **The Problem:** Valorant's native scoreboards don't tell the whole story. When a Level 20 player drops 30 kills in your lobby, are they just having the game of their life, or are they an Immortal smurf ruining the competitive integrity of the match? 
 
-**The Solution:** OmenScan doesn't just display data; it interprets it. By utilizing a multi-variable heuristic engine, OmenScan analyzes the statistical probability of a player operating on an alternate account and exposes hidden anomalies in their match history.
+**The Solution:** CypherScan doesn't just display data; it interprets it. By utilizing a multi-variable heuristic engine, CypherScan analyzes the statistical probability of a player operating on an alternate account and exposes hidden anomalies in their match history.
 
 ---
 
 ## 🧠 The Heuristic Engine (How It Works)
 
-OmenScan doesn't rely on simple K/D ratios. It weighs four key behavioral indicators to generate a highly accurate "Smurf Probability" score:
+CypherScan doesn't rely on simple K/D ratios. It weighs four key behavioral indicators to generate a highly accurate "Smurf Probability" score:
 
 1. **Lobby ACS Deviation (40% Weight)**  
-   *Does this player consistently play like they belong in a higher rank?* OmenScan compares the target player's Average Combat Score (ACS) strictly against the average of the *other 9 players* in that specific lobby.
+   *Does this player consistently play like they belong in a higher rank?* CypherScan compares the target player's Average Combat Score (ACS) strictly against the average of the *other 9 players* in that specific lobby.
 2. **MVP Consistency (25% Weight)**  
    *Are they hard-carrying every single game?* Analyzes their Match MVP and Team MVP frequency across their last 5 competitive matches.
 3. **Account Level Penalty (20% Weight)**  
@@ -36,7 +36,7 @@ OmenScan doesn't rely on simple K/D ratios. It weighs four key behavioral indica
 
 ## 🏗️ System Architecture
 
-OmenScan uses a clean **Backend-For-Frontend (BFF)** architecture to keep API keys hidden and ensure lightning-fast responses.
+CypherScan uses a clean **Backend-For-Frontend (BFF)** architecture to keep API keys hidden and ensure lightning-fast responses.
 
 ```mermaid
 sequenceDiagram
@@ -71,12 +71,12 @@ sequenceDiagram
 
 ## 🚀 Getting Started (Local Development)
 
-To run OmenScan locally, follow these steps:
+To run CypherScan locally, follow these steps:
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/asperavl/omenscan.git
-   cd omenscan
+   git clone https://github.com/asperavl/cypherscan.git
+   cd cypherscan
    ```
 
 2. **Install dependencies**
