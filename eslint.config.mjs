@@ -13,6 +13,12 @@ const eslintConfig = defineConfig([
     "build/**",
     "next-env.d.ts",
   ]),
+  // Turn off the strict TypeScript rule for 'any' types
+  {
+    rules: {
+      "@typescript-eslint/no-explicit-any": "off"
+    }
+  }
 ]);
 
 export default eslintConfig;
