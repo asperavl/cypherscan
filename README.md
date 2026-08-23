@@ -69,6 +69,33 @@ sequenceDiagram
 
 ---
 
+## ☁️ Infrastructure & SRE (AWS + Docker)
+
+CypherScan is designed with modern Site Reliability Engineering (SRE) practices in mind, demonstrating a full end-to-end containerized deployment pipeline.
+
+### Continuous Integration (GitHub Actions)
+Every push to the repository triggers an automated CI/CD pipeline that:
+1. **Lints** the codebase to enforce styling rules.
+2. **Builds** the Next.js application to verify compilation.
+3. **Validates** the Terraform infrastructure code.
+4. **Builds & Pushes** a production-ready Docker image to GitHub Container Registry (GHCR) on `main` branch merges.
+
+### Containerization (Docker)
+The application is containerized using a **multi-stage Docker build**. 
+- Leverages Next.js `standalone` output mode to shrink the final image to ~120MB (excluding unnecessary `node_modules`).
+- Runs as a non-root user (`nextjs`) for enhanced security.
+- Includes a dedicated `/api/health` liveness/readiness probe that actively monitors Redis connectivity.
+
+### Infrastructure as Code (Terraform)
+The `infra/` directory contains declarative Terraform configurations to provision the AWS environment:
+- **AWS ECR** (Elastic Container Registry) for private image hosting.
+- **AWS App Runner** for serverless container orchestration (auto-scaling, load balancing, and HTTPS routing).
+- **IAM Roles** applying the principle of least privilege for ECR access.
+
+*(Note: The live site is currently hosted on Vercel for cost-efficiency, but the Docker/Terraform pipeline is fully functional and ready for enterprise AWS deployment).*
+
+---
+
 ## 🚀 Getting Started (Local Development)
 
 To run CypherScan locally, follow these steps:
