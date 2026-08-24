@@ -1,8 +1,0 @@
-# Rename this file to terraform.tfvars and fill in your values
-# DO NOT commit terraform.tfvars to git!
-
-aws_region          = "us-east-1"
-app_name            = "cypherscan"
-henrik_api_key      = "your_henrik_api_key_here"
-upstash_redis_url   = "your_upstash_url_here"
-upstash_redis_token = "your_upstash_token_here"

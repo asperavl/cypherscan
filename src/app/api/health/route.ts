@@ -28,7 +28,7 @@ export async function GET() {
         } else {
             healthInfo.dependencies.redis = 'not_configured';
         }
-    } catch (error) {
+    } catch (_error) {
         // If Redis is down, we flag the app as degraded
         healthInfo.status = 'degraded';
         healthInfo.dependencies.redis = 'error';

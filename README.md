@@ -7,8 +7,7 @@
     <img src="https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white" alt="Tailwind" />
     <img src="https://img.shields.io/badge/Redis-DC382D?style=for-the-badge&logo=redis&logoColor=white" alt="Redis" />
     <img src="https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white" alt="Docker" />
-    <img src="https://img.shields.io/badge/Terraform-7B42BC?style=for-the-badge&logo=terraform&logoColor=white" alt="Terraform" />
-    <img src="https://img.shields.io/badge/AWS-232F3E?style=for-the-badge&logo=amazon-aws&logoColor=white" alt="AWS" />
+
     <img src="https://img.shields.io/badge/GitHub_Actions-2088FF?style=for-the-badge&logo=github-actions&logoColor=white" alt="GitHub Actions" />
 
   </p>
@@ -74,7 +73,7 @@ sequenceDiagram
 
 ---
 
-## ☁️ Infrastructure & SRE (AWS + Docker)
+## ☁️ Infrastructure & SRE (Docker + CI/CD)
 
 CypherScan is designed with modern Site Reliability Engineering (SRE) practices in mind, demonstrating a full end-to-end containerized deployment pipeline.
 
@@ -82,8 +81,7 @@ CypherScan is designed with modern Site Reliability Engineering (SRE) practices 
 Every push to the repository triggers an automated CI/CD pipeline that:
 1. **Lints** the codebase to enforce styling rules.
 2. **Builds** the Next.js application to verify compilation.
-3. **Validates** the Terraform infrastructure code.
-4. **Builds & Pushes** a production-ready Docker image to GitHub Container Registry (GHCR) on `main` branch merges.
+3. **Builds & Pushes** a production-ready Docker image to GitHub Container Registry (GHCR) on `main` branch merges.
 
 ### Containerization (Docker)
 The application is containerized using a **multi-stage Docker build**. 
@@ -91,13 +89,7 @@ The application is containerized using a **multi-stage Docker build**.
 - Runs as a non-root user (`nextjs`) for enhanced security.
 - Includes a dedicated `/api/health` liveness/readiness probe that actively monitors Redis connectivity.
 
-### Infrastructure as Code (Terraform)
-The `infra/` directory contains declarative Terraform configurations to provision the AWS environment:
-- **AWS ECR** (Elastic Container Registry) for private image hosting.
-- **AWS App Runner** for serverless container orchestration (auto-scaling, load balancing, and HTTPS routing).
-- **IAM Roles** applying the principle of least privilege for ECR access.
-
-*(Note: The live site is currently hosted on Vercel for cost-efficiency, but the Docker/Terraform pipeline is fully functional and ready for enterprise AWS deployment).*
+*(Note: The live site is currently hosted on Vercel for cost-efficiency, but the Docker pipeline is fully functional and ready for enterprise deployment).*
 
 ---
 

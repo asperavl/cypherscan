@@ -34,27 +34,9 @@ jobs:
           UPSTASH_REDIS_REST_URL: "https://mock.upstash.io"
           UPSTASH_REDIS_REST_TOKEN: "mock_token"
 
-  terraform-validate:
-    name: Validate Infrastructure
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
-
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v3
-
-      - name: Terraform Init
-        run: terraform init -backend=false
-        working-directory: ./infra
-
-      - name: Terraform Validate
-        run: terraform validate
-        working-directory: ./infra
-
   docker-publish:
     name: Build & Push Docker Image
-    needs: [lint-and-build, terraform-validate]
+    needs: [lint-and-build]
     # Only publish the image if we are pushing to main, not on PRs
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
