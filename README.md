@@ -84,7 +84,7 @@ Every push to the repository triggers an automated CI/CD pipeline that:
 
 ### Containerization (Docker)
 The application is containerized using a **multi-stage Docker build**. 
-- Leverages Next.js `standalone` output mode to shrink the final image to ~120MB (excluding unnecessary `node_modules`).
+- Leverages Next.js `standalone` output mode to shrink the final image to ~300MB (excluding unnecessary `node_modules`).
 - Runs as a non-root user (`nextjs`) for enhanced security.
 - Includes a dedicated `/api/health` liveness/readiness probe that actively monitors Redis connectivity.
 
