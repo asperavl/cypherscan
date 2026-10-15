@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { analyzeSmurfProbability } from '@/lib/smurfAlgorithm';
-import { z } from 'zod';
+import { RequestSchema } from '@/lib/validations';
 import { Redis } from '@upstash/redis';
 import { Ratelimit } from '@upstash/ratelimit';
 
@@ -8,13 +8,6 @@ import { Ratelimit } from '@upstash/ratelimit';
 const HENRIK_API_KEY = process.env.HENRIK_API_KEY;
 const UPSTASH_URL = process.env.UPSTASH_REDIS_REST_URL;
 const UPSTASH_TOKEN = process.env.UPSTASH_REDIS_REST_TOKEN;
-
-// Validation Schema
-const RequestSchema = z.object({
-  name: z.string().trim().min(1, "Name is required"),
-  tag: z.string().trim().min(1, "Tag is required"),
-  region: z.enum(['na', 'eu', 'ap', 'kr'])
-});
 
 // Initialize Redis if configured
 let redis: Redis | null = null;

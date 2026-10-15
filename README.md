@@ -1,130 +1,109 @@
-<div align="center">
-  <h1 align="center">CypherScan</h1>
-  <p align="center"><strong>Advanced Heuristic Anomaly Detection for Valorant</strong></p>
-  <p align="center">
-    <img src="https://img.shields.io/badge/Next.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white" alt="Next.js" />
-    <img src="https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript" />
-    <img src="https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white" alt="Tailwind" />
-    <img src="https://img.shields.io/badge/Redis-DC382D?style=for-the-badge&logo=redis&logoColor=white" alt="Redis" />
-    <img src="https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white" alt="Docker" />
-    <img src="https://img.shields.io/badge/GitHub_Actions-2088FF?style=for-the-badge&logo=github-actions&logoColor=white" alt="GitHub Actions" />
+# CypherScan
 
-  </p>
-</div>
+A lightweight Valorant match history analyzer and smurf heuristic tool.
 
-<br />
-
-## 🎯 The Problem & Solution
-
-**The Problem:** Valorant's native scoreboards don't tell the whole story. When a Level 20 player drops 30 kills in your lobby, are they just having the game of their life, or are they an Immortal smurf ruining the competitive integrity of the match? 
-
-**The Solution:** CypherScan doesn't just display data; it interprets it. By utilizing a multi-variable heuristic engine, CypherScan analyzes the statistical probability of a player operating on an alternate account and exposes hidden anomalies in their match history.
+[![Next.js](https://img.shields.io/badge/Next.js-16-black?style=flat-square&logo=nextdotjs)](https://nextjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5-blue?style=flat-square&logo=typescript)](https://www.typescriptlang.org/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4-38B2AC?style=flat-square&logo=tailwind-css)](https://tailwindcss.com/)
+[![Vitest](https://img.shields.io/badge/Vitest-5-729B1B?style=flat-square&logo=vitest)](https://vitest.dev/)
+[![Upstash Redis](https://img.shields.io/badge/Upstash_Redis-red?style=flat-square&logo=redis)](https://upstash.com/)
+[![CI](https://img.shields.io/badge/CI-GitHub_Actions-2088FF?style=flat-square&logo=github-actions)](https://github.com/features/actions)
 
 ---
 
-## 🧠 The Heuristic Engine (How It Works)
+## What is CypherScan?
 
-CypherScan doesn't rely on simple K/D ratios. It weighs four key behavioral indicators to generate a highly accurate "Smurf Probability" score:
-
-1. **Lobby ACS Deviation (40% Weight)**  
-   *Does this player consistently play like they belong in a higher rank?* CypherScan compares the target player's Average Combat Score (ACS) strictly against the average of the *other 9 players* in that specific lobby.
-2. **MVP Consistency (25% Weight)**  
-   *Are they hard-carrying every single game?* Analyzes their Match MVP and Team MVP frequency across their last 5 competitive matches.
-3. **Account Level Penalty (20% Weight)**  
-   *Is this account suspiciously new?* Cross-references low account levels (Level < 40) with massive overperformance. (It explicitly pardons low-level players who perform normally).
-4. **The "Rust" Factor (15% Weight)**  
-   *Are they too good after taking a break?* Detects if an account hasn't played a competitive match in weeks but instantly returns and drops a 300+ ACS.
+CypherScan lets you look up a Valorant player's recent competitive matches and calculates a heuristic score (0–100) to see if their performance patterns resemble an alternate or smurf account.
 
 ---
 
-## 🏗️ System Architecture
+## Scoring Breakdown
 
-CypherScan uses a clean **Backend-For-Frontend (BFF)** architecture to keep API keys hidden and ensure lightning-fast responses.
+The score weighs four signals across recent competitive games:
+
+- **Lobby ACS Deviation (40%)**: Compares the player's ACS against the average of the other 9 players in the lobby to check for outperformance relative to the match.
+- **MVP Consistency (25%)**: Tracks how often the player gets Match MVP (1.0x) or Team MVP (0.5x).
+- **Account Level Factor (20%)**: Low-level accounts (< 25 or 40) that heavily outperform get flagged, while low-level accounts performing normally are pardoned. Accounts over level 100 are treated as likely main accounts.
+- **Rust Factor (15%)**: Flags accounts returning after an inactivity gap (> 7 days) and immediately putting up high ACS (> 250).
+
+> **Note:** This is an experimental heuristic based on public match history, not an official verdict or anti-cheat check.
+
+---
+
+## How It Works
+
+Next.js server route handlers (`/api/analyze`) query HenrikDev's unofficial Valorant API so secret API keys remain safe on the server. Upstash Redis handles caching and rate limiting.
 
 ```mermaid
 sequenceDiagram
-    participant Client as Frontend (UI)
-    participant API as Next.js Backend
+    participant Client as Frontend
+    participant Server as Next.js API (/api/analyze)
     participant Redis as Upstash Redis
     participant Henrik as HenrikDev API
 
-    Client->>API: 1. Request Analysis
-    API->>Redis: 2. Check Rate Limits & Cache
-    API->>Henrik: 3. Fetch Match Data (if not cached)
-    API-->>Client: 4. Return Smurf Probability
+    Client->>Server: Look up player (name, tag, region)
+    Server->>Redis: Check rate limit (5 req/min) & cache
+    Server->>Henrik: Fetch match data (if uncached)
+    Server-->>Client: Return score & match details
 ```
 
-### 🔒 Security & Performance
-- **Rate Limiting:** Protects the external API quota by strictly limiting users to 5 requests per minute using Upstash Redis.
-- **Response Caching:** Analyzed profiles are cached in Redis for 10 minutes, dropping repeat-search latency to ~50ms.
-- **Strict Validation:** Uses Zod to enforce strict payload shaping and reject malformed requests.
+- **Rate Limiting**: 5 requests/minute per IP via `@upstash/ratelimit`.
+- **Caching**: 10-minute cache in Upstash Redis to conserve external API quota.
+- **Validation**: Payload validation with Zod.
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 
-- **Framework:** Next.js (App Router)
-- **Language:** TypeScript
-- **Styling:** Tailwind CSS v4 + Shadcn UI
-- **Database/Cache:** Upstash Redis
-- **Security:** Zod (Validation), @upstash/ratelimit
-- **External API:** HenrikDev Unofficial Valorant API
-
----
-
-## ☁️ Infrastructure & SRE (Docker + CI/CD)
-
-CypherScan is designed with modern Site Reliability Engineering (SRE) practices in mind, demonstrating a full end-to-end containerized deployment pipeline.
-
-### Continuous Integration (GitHub Actions)
-Every push to the repository triggers an automated CI/CD pipeline that:
-1. **Lints** the codebase to enforce styling rules.
-2. **Builds** the Next.js application to verify compilation.
-3. **Builds & Pushes** a production-ready Docker image to GitHub Container Registry (GHCR) on `main` branch merges.
-
-### Containerization (Docker)
-The application is containerized using a **multi-stage Docker build**. 
-- Leverages Next.js `standalone` output mode to shrink the final image to ~120MB (excluding unnecessary `node_modules`).
-- Runs as a non-root user (`nextjs`) for enhanced security.
-- Includes a dedicated `/api/health` liveness/readiness probe that actively monitors Redis connectivity.
-
-*(Note: The live site is currently hosted on Vercel for cost-efficiency, but the Docker pipeline is fully functional and ready for enterprise deployment).*
+- **Framework**: Next.js (App Router) & TypeScript
+- **Styling**: Tailwind CSS v4 + Shadcn UI
+- **Cache / Rate Limit**: Upstash Redis
+- **Testing**: Vitest
+- **External API**: HenrikDev Unofficial Valorant API
+- **CI / Hosting**: GitHub Actions & Vercel
 
 ---
 
-## 🚀 Getting Started (Local Development)
+## Getting Started
 
-To run CypherScan locally, follow these steps:
+### Prerequisites
+- Node.js 20+ (Node 22 recommended)
+- HenrikDev API key ([Dashboard](https://api.henrikdev.xyz/dashboard/))
+- Upstash Redis database ([Upstash Console](https://console.upstash.com/))
 
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/asperavl/cypherscan.git
-   cd cypherscan
-   ```
+### 1. Setup
 
-2. **Install dependencies**
-   ```bash
-   npm install
-   ```
+```bash
+git clone https://github.com/asperavl/cypherscan.git
+cd cypherscan
+npm install
+```
 
-3. **Set up Environment Variables**
-   Rename the `.env.example` file to `.env.local` and add your keys:
-   ```bash
-   # Get an API key from the HenrikDev Discord
-   HENRIK_API_KEY=your_henrik_key
-   
-   # Get Redis keys from console.upstash.com
-   UPSTASH_REDIS_REST_URL=your_upstash_url
-   UPSTASH_REDIS_REST_TOKEN=your_upstash_token
-   ```
+### 2. Environment Variables
 
-4. **Run the development server**
-   ```bash
-   npm run dev
-   ```
-   Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Create `.env.local` based on `.env.example`:
+
+```bash
+HENRIK_API_KEY=your_henrik_key
+UPSTASH_REDIS_REST_URL=your_upstash_url
+UPSTASH_REDIS_REST_TOKEN=your_upstash_token
+```
+
+### 3. Run
+
+```bash
+# Start dev server (http://localhost:3000)
+npm run dev
+
+# Run tests
+npm test
+
+# Run tests in watch mode
+npm run test:watch
+```
 
 ---
 
-## 📄 License
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+## License
+
+This project is licensed under the MIT License - see [LICENSE](LICENSE) for details.
