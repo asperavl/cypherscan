@@ -116,7 +116,7 @@ export function analyzeSmurfProbability(accountData: any, matchesData: any[]) {
   const level = accountData.account_level;
   if (level < 40 && avgDeviationRatio < 1.1) {
     levelScore = 0;
-    flags.push({ type: 'green', message: `Low account level (${level}) but normal performance indicates a genuine new player.` });
+    flags.push({ type: 'green', message: `Low account level (${level}) with expected performance is consistent with a genuine new player.` });
   } else {
     if (level < 25) {
       levelScore = 100;
@@ -126,7 +126,7 @@ export function analyzeSmurfProbability(accountData: any, matchesData: any[]) {
       flags.push({ type: 'red', message: `Account level is relatively low (${level}) while outperforming.` });
     } else if (level > 100) {
       levelScore = 0;
-      flags.push({ type: 'green', message: `High account level (${level}) usually indicates a main account.` });
+      flags.push({ type: 'green', message: `High account level (${level}) typically indicates a main account.` });
     }
   }
 

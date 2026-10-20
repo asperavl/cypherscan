@@ -66,7 +66,7 @@ export default function Home() {
             Cypher<span className="text-primary">Scan</span>
           </h1>
           <p className="text-muted-foreground text-lg md:text-xl max-w-2xl mx-auto font-light">
-            Enter a Valorant Riot ID to analyze recent competitive match data and expose lobby anomalies.
+            Enter a Valorant Riot ID to analyze recent competitive match data and evaluate lobby performance anomalies.
           </p>
         </div>
 
@@ -109,7 +109,7 @@ export default function Home() {
         {result && (
           <div className="space-y-12 animate-in fade-in slide-in-from-bottom-8 duration-700">
             
-            {/* The Verdict */}
+            {/* The Heuristic Score */}
             <Card className="overflow-hidden relative bg-card/40 backdrop-blur-2xl border-border/50 shadow-2xl rounded-none">
               <div 
                 className="absolute left-0 top-0 w-2 h-full" 
@@ -117,10 +117,10 @@ export default function Home() {
               />
               <CardHeader className="text-center pb-2 pt-12">
                 <CardTitle className="text-2xl text-muted-foreground font-[family-name:var(--font-oswald)] uppercase tracking-[0.2em]">
-                  Smurf Probability
+                  Smurf Heuristic Index
                 </CardTitle>
               </CardHeader>
-              <CardContent className="flex flex-col items-center gap-8 pb-16">
+              <CardContent className="flex flex-col items-center gap-8 pb-14">
                 <div 
                   className="text-9xl md:text-[10rem] font-[family-name:var(--font-oswald)] font-black leading-none drop-shadow-2xl" 
                   style={{ 
@@ -130,7 +130,7 @@ export default function Home() {
                 >
                   {result.analysis.score}%
                 </div>
-                <div className="w-full max-w-2xl px-6">
+                <div className="w-full max-w-2xl px-6 space-y-4">
                   <Progress 
                     value={result.analysis.score} 
                     className="h-2 rounded-none bg-background/50 border border-border"
@@ -138,6 +138,9 @@ export default function Home() {
                       '--progress-background': result.analysis.score > 70 ? 'hsl(var(--destructive))' : result.analysis.score > 40 ? '#eab308' : '#00ffcc'
                     } as React.CSSProperties}
                   />
+                  <p className="text-xs text-muted-foreground/75 font-mono text-center max-w-xl mx-auto px-4 leading-relaxed">
+                    Experimental heuristic index based on public match telemetry. Scores represent statistical deviation patterns, not definitive proof or an official Riot Games verdict.
+                  </p>
                 </div>
               </CardContent>
             </Card>
